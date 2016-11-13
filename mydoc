@@ -1,0 +1,62 @@
+#!/bin/bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	This meta-tool dumps documentations of each tool available on this machine.
+	Attributes: SEARCH_STRING
+DESCRIPTION
+
+: <<USAGE
+	mydoc
+	mydoc git
+	mydoc 'git|apache'
+USAGE
+
+######################################
+
+NL='#'
+# echo "My tools available on this machine:"
+echo
+
+# script directory
+pushd `dirname $0` > /dev/null
+SCRIPTDIR=`pwd -P`
+popd > /dev/null
+
+cd "$SCRIPTDIR/bin"
+FILES=`grep -rl '^#!/' . | sort -t '\0' -n`
+for f in $FILES
+do
+	# Tool name
+	TNAME=`basename "$f"`
+
+	if [[ (-n $1)  && !($TNAME =~ $1) ]]; then
+		continue
+	fi
+
+	echo $'\e[39m\e[44m'$TNAME$'\e[39m\e[49m'
+	# echo -e "\e[92m`basename "$f"`\e[39m"  # Linux version
+
+	# Description
+	# echo $'\e[34m''Description:'$'\e[39m'
+ 	# DSCR=`cat $f | tr '\n' '|' | grep -o '| *# *<description>.*</description>' | sed 's/\(<description>\)\(.*\)\(<\/description>\)/\2/g' | sed 's/| *# */|/g' | tr '|' '\n' | grep -v "^$"`
+ 	DSCR=`cat $f | tr '\n' "${NL}" | grep -o "${NL}: *<<DESCRIPTION.*${NL}DESCRIPTION" | sed "s/\(${NL}: *<<DESCRIPTION\)\(.*\)\(${NL}DESCRIPTION\)/\2/g" | tr "${NL}" '\n' | grep -v "^$"`
+	if [ -n "$DSCR" ]; then 
+		printf "$DSCR\n" 
+	fi
+
+	# Usage
+ 	USAGE=`cat $f | tr '\n' "${NL}" | grep -o "${NL}: *<<USAGE.*${NL}USAGE" | sed "s/\(${NL}: *<<USAGE\)\(.*\)\(${NL}USAGE\)/\2/g" | tr "${NL}" '\n' | grep -v "^$"`
+ 	if [ -n "$USAGE" ]; then 
+ 		printf "\e[34m$USAGE\e[39m\n"
+	fi
+
+	# Usage
+ 	ADDITIONAL=`cat $f | tr '\n' "${NL}" | grep -o "${NL}: *<<ADDITIONAL.*${NL}ADDITIONAL" | sed "s/\(${NL}: *<<ADDITIONAL\)\(.*\)\(${NL}ADDITIONAL\)/\2/g" | tr "${NL}" '\n' | grep -v "^$"`
+ 	if [ -n "$ADDITIONAL" ]; then 
+ 		printf "\e[90m$ADDITIONAL\e[39m\n"
+	fi
+
+	echo
+done

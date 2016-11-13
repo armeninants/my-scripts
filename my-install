@@ -1,0 +1,68 @@
+#!/bin/bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	Install my command-line tools on the local machine.
+DESCRIPTION
+
+: <<USAGE
+
+USAGE
+
+######################################
+
+
+# detect the operating system
+platform='unknown'
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   platform='linux'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+   platform='mac'
+else
+	echo $'\e[31mSorry, your operating system is not supported.\e[39m'
+	exit
+fi
+
+
+# scripts directory
+pushd `dirname $0` > /dev/null
+SCRIPTDIR=`pwd -P`
+SCRIPTSDIR="$SCRIPTDIR/scripts"
+BINDIR="$SCRIPTDIR/bin"
+popd > /dev/null
+
+mkdir -p "$BINDIR" # create BINDIR silently
+rm -rf "$BINDIR/*" # clean BINDIR
+scripts=`grep -Rl '^#!/' $SCRIPTSDIR` # find all executable files (heuristically) in "scripts" dir
+for script in $scripts # for each such file file
+do
+	# echo "$script"
+	chmod gu+x $script # make it executable
+	ln -sf "$script" "$BINDIR" # create a symbolic link to it in BINDIR
+done
+
+
+# permanently add the BINDIR and SCRIPTDIR directories to PATH
+if [[ $platform == 'linux' ]]; then
+	# remove old records from .bash_profile and .bashrc
+	sed -i.bak '/#my-tools/d' ~/.bash_profile && rm ~/.bash_profile.bak
+	sed -i.bak '/#my-tools/d' ~/.bashrc && rm ~/.bashrc.bak
+
+	echo 'PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bash_profile
+	echo 'PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bashrc
+elif [[ $platform == 'mac' ]]; then
+	echo "Adding to PATH..."
+	sudo -s "echo '"$SCRIPTDIR:$BINDIR"' > /etc/paths.d/mytools"
+fi
+
+
+# now make all scripts executable
+echo "Restart the terminal for PATH update."
+
+
+# OLD: find all script-containing directories
+# function join { local IFS="$1"; shift; echo "$*"; }
+# DIRS=`grep -Rl '^#!.*bash' $SCRIPTSDIR | sed 's/\(.*\/\)\(.*\)/\1/' | sort | uniq`
+# DIRS_STR=`join ':' $DIRS`	

@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+
+/*
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	For all files in the working directory which start with "_",
+	replace all tokens ending with "-token" with corresponding entries from config.json 
+	and write the result in a file without the "_" prefix.   
+DESCRIPTION
+
+: <<USAGE
+
+USAGE
+
+######################################
+*/
+
+var process = require('process'),
+	path = require('path'),
+	fs = require('fs'),
+	recursiveFileProcessor = require(path.join(__dirname, 'recursive-file-processor'));
+
+
+var tokenRegex = /\{((?:[\w]+-)*[\w]+)-token\}/g; // regular expression for tokens (keys) to be replaced
+
+
+/*
+ File handler
+*/
+function fileHandler(dir, fileName, fileContent, tokens) {
+	function replaceCallback(match, key) {
+		if (!(key in tokens)) {
+			console.error('Unknown key ' + key);
+			process.exit(1);
+		}
+		return tokens[key];
+	}
+
+	var compiled = fileContent.replace(tokenRegex, replaceCallback);
+	var compiledFilePath = path.join(dir, fileName.replace(/^_/, ''));
+	fs.writeFileSync(compiledFilePath, compiled, 'utf8'); 
+
+}
+
+recursiveFileProcessor({
+	initDir: process.env.PWD,
+	fileFilter: /^_/,
+	fileHandler: fileHandler,
+	externalConfRequired: true,
+	skipDirs: ['doc']
+});
