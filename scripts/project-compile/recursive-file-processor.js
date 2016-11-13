@@ -42,8 +42,6 @@ function recursiveFileProcessor(conf) {
 		skipDirs	= ['node_modules'];
 
 	skipDirs = skipDirs.concat(conf.skipDirs).unique();
-	console.log(skipDirs);
-
 
 	/*
 		@param dir
