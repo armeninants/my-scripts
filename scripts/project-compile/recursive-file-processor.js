@@ -34,12 +34,13 @@ Array.prototype.unique = function() {
 // ========== Main ===========
 
 function recursiveFileProcessor(conf) {
-	var initDir 	= conf.initDir || __dirname,
-		fileFilter 	= conf.fileFilter || /^_/,
-		callback 	= conf.fileHandler || function() {},
-		initConf	= conf.externalConfRequired ? undefined : {},
-		confFile 	= conf.confFile || 'config.json',
-		skipDirs	= ['node_modules'];
+	var initDir 		= conf.initDir || __dirname,
+		fileFilter 		= conf.fileFilter || /^_/,
+		callback 		= conf.fileHandler || function() {},
+		initConf		= conf.externalConfRequired ? undefined : {},
+		confFile 		= conf.confFile || 'config.json',
+		skipDirs		= ['node_modules'],
+		initialDirFlag 	= true;
 
 	skipDirs = skipDirs.concat(conf.skipDirs).unique();
 
@@ -48,6 +49,28 @@ function recursiveFileProcessor(conf) {
 		@param config
 	*/
 	function filesIterator(dir, config) {
+
+		/*
+			@param dir
+			@param doUpPropagation Boolean
+		*/
+		function getConfig(dir, doUpPropagation) {
+			var config;
+			try {
+				config = JSON.parse(
+					fs.readFileSync( path.join(dir, confFile), 'utf8' )
+				);
+			}
+			catch (e) {
+				if (dir === '/' || !doUpPropagation) {
+					return false
+				} else {
+					return getConfig( path.join(dir, '..'), doUpPropagation );
+				}
+			}
+			return config;
+		}
+
 		function itemHandler(fileOrDir, index) {
 			var fullPath = path.join(dir, fileOrDir);
 
@@ -59,7 +82,7 @@ function recursiveFileProcessor(conf) {
 
 				if ( stat.isFile() && fileFilter.test(fileOrDir) ) {
 					var fileContent = fs.readFileSync(path.join(dir, fileOrDir), 'utf8');
-					console.log('Processing file: ', fileOrDir);
+					console.log('   ', fileOrDir);
 					callback(dir, fileOrDir, fileContent, config);
 				} else if ( stat.isDirectory() && !include(skipDirs, fileOrDir) ) {
 					filesIterator(path.join(dir, fileOrDir), config);
@@ -78,20 +101,9 @@ function recursiveFileProcessor(conf) {
 		}
 
 
-		var configFilePath = path.join(dir, confFile); // full path to the config file
-		var localConfig;
-		try {
-			localConfig = JSON.parse(fs.readFileSync(configFilePath, 'utf8')); // import tokens from external config
-		}
-		catch (e) {
-			if (!config) { // neither parent config nor local config are there
-				console.error('Missing or invalid ' + confFile);
-				process.exit(1);
-			}
-		}
-		config = localConfig || config;
-
 		console.log('DIRECTORY ' + dir);
+		config = getConfig(dir, initialDirFlag) || config;
+		if (initialDirFlag) initialDirFlag = false;
 		fs.readdir(dir, dirHandler);
 	}
 

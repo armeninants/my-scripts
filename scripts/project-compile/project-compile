@@ -27,6 +27,12 @@ var tokenRegex = /\{((?:[\w]+-)*[\w]+)-token\}/g; // regular expression for toke
 
 /*
  File handler
+
+ @param dir
+ @param fileName
+ @param fileContent
+ @param tokens
+
 */
 function fileHandler(dir, fileName, fileContent, tokens) {
 	function replaceCallback(match, key) {
@@ -48,5 +54,6 @@ recursiveFileProcessor({
 	fileFilter: /^_/,
 	fileHandler: fileHandler,
 	externalConfRequired: true,
+	// confFile: 'config.json',
 	skipDirs: ['doc']
 });
