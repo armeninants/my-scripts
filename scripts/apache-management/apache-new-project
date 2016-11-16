@@ -33,7 +33,7 @@ fi
 SITE_NAME="$1"
 
 function replace {
-	sed -i "s/$(echo $1)/$(echo $2 | sed -e 's/[\/&]/\\&/g')/g" $3
+	sudo sed -i "s/$(echo $1)/$(echo $2 | sed -e 's/[\/&]/\\&/g')/g" $3
 }
 
 # script directory
