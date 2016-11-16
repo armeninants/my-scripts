@@ -49,10 +49,10 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # make sure a directory for the new site exists
 DOCUMENT_ROOT="/var/www/$SITE_NAME"
 sudo mkdir -p $DOCUMENT_ROOT
-chown -R $USER:$USER $DOCUMENT_ROOT
+sudo chown -R $USER:$USER $DOCUMENT_ROOT
 
 # create a new apache configuration file
-CONF_FILE="/etc/apache2/sites-available/${SITE_NAME}.conf"
+CONF_FILE="/etc/apache2/sites-available/$SITE_NAME.conf"
 sudo cp "$SCRIPTDIR/default-site-available.conf" "$CONF_FILE"
 replace '_SiteName_' "$SITE_NAME" "$CONF_FILE"
 
