@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	A script for deleting an Apache2 virtual host
+	Arguments: SITE_NAME
+DESCRIPTION
+
+: <<USAGE
+
+USAGE
+
+######################################
+
+# Operating system
+unamestr=`uname`
+if [[ "$unamestr" != 'Linux' ]]; then
+   echo "Linux required"
+   exit
+fi
+
+# Arguments' processing
+if [ -z "$1" ]; then
+	echo "USAGE: $0 SITE_NAME"
+	exit
+fi
+SITE_NAME=$1
+
+# disabling the host
+sudo a2dissite $SITE_NAME
+echo "Restarting Apache..."
+sudo service apache2 restart
+
+# removing all files
+rm /etc/apache2/sites-available/${SITE_NAME}.conf
+# rm -rf /var/www/${SITE_NAME}
+
+echo -e "\e[92mDone!\e[39m"
+

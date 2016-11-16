@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	A script for creating an Apache2 virtual host
+	Arguments: SITE_NAME
+DESCRIPTION
+
+: <<USAGE
+
+USAGE
+
+: <<ADDITIONAL
+	Default configuration file: default-site-available.conf
+ADDITIONAL
+
+######################################
+
+# Operating system
+unamestr=`uname`
+if [[ "$unamestr" != 'Linux' ]]; then
+   echo "Linux required"
+   exit
+fi
+
+# Arguments' processing
+if [ -z "$1" ]; then
+	echo "USAGE: $0 SITE_NAME"
+	exit
+fi
+# site name
+SITE_NAME="$1"
+
+function replace {
+	sed -i "s/$(echo $1)/$(echo $2 | sed -e 's/[\/&]/\\&/g')/g" $3
+}
+
+# script directory
+pushd `dirname $0` > /dev/null
+SCRIPTDIR=`pwd -P`
+popd > /dev/null
+
+# make sure a directory for the new site exists
+DOCUMENT_ROOT="/var/www/$SITE_NAME"
+sudo mkdir -p $DOCUMENT_ROOT
+# chown -R $USER:$USER $DOCUMENT_ROOT
+
+# create a new apache configuration file
+CONF_FILE="/etc/apache2/sites-available/${SITE_NAME}.conf"
+cp "$SCRIPTDIR/default-site-available.conf" "$CONF_FILE"
+replace '_SiteName_' "$SITE_NAME" "$CONF_FILE"
+
+# index.html
+if [ ! -f $DOCUMENT_ROOT/index.html ]; then
+cat > $DOCUMENT_ROOT/index.html <<EOF
+<!DOCTYPE html>
+<html>
+	<head><title>Welcome to $SITE_NAME</title></head>
+	<body>I'm up and running!</body>
+</html>
+EOF
+fi
+
+# enable the new site
+sudo a2ensite "$SITE_NAME"
+echo "Restarting Apache..."
+sudo service apache2 restart
+
+# report some details
+echo -e "\e[92mDone!\e[39m"
+echo -e "The new site is located at
+	\e[96m$DOCUMENT_ROOT\e[39m
+and available at
+	\e[96mhttp://$SITE_NAME.localhost\e[39m"
+
+
