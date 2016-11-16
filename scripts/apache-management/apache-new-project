@@ -37,18 +37,23 @@ function replace {
 }
 
 # script directory
-pushd `dirname $0` > /dev/null
-SCRIPTDIR=`pwd -P`
-popd > /dev/null
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 
 # make sure a directory for the new site exists
 DOCUMENT_ROOT="/var/www/$SITE_NAME"
 sudo mkdir -p $DOCUMENT_ROOT
-# chown -R $USER:$USER $DOCUMENT_ROOT
+chown -R $USER:$USER $DOCUMENT_ROOT
 
 # create a new apache configuration file
 CONF_FILE="/etc/apache2/sites-available/${SITE_NAME}.conf"
-cp "$SCRIPTDIR/default-site-available.conf" "$CONF_FILE"
+sudo cp "$SCRIPTDIR/default-site-available.conf" "$CONF_FILE"
 replace '_SiteName_' "$SITE_NAME" "$CONF_FILE"
 
 # index.html
