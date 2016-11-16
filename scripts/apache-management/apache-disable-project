@@ -34,7 +34,7 @@ echo "Restarting Apache..."
 sudo service apache2 restart
 
 # removing all files
-rm /etc/apache2/sites-available/${SITE_NAME}.conf
+sudo rm /etc/apache2/sites-available/${SITE_NAME}.conf
 # rm -rf /var/www/${SITE_NAME}
 
 echo -e "\e[92mDone!\e[39m"
