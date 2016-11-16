@@ -29,3 +29,4 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 cd "$SCRIPTDIR"
 git fetch origin master
 git reset --hard origin/master
+./myinstall
