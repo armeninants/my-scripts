@@ -1,4 +1,4 @@
-## MyTools -- a handy tool for managing your shell scripts
+## MyTools - a handy tool for managing your shell scripts
 
 ### Installation
 
@@ -10,7 +10,7 @@ Then run
 ```
 
 ### How to use
-To get started, run
+To get started, run 
 ```sh
 mydoc
 ```
