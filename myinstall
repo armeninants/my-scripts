@@ -12,14 +12,13 @@ USAGE
 
 ######################################
 
-
 # detect the operating system
 platform='unknown'
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then
-   platform='linux'
+	platform='linux'
 elif [[ "$unamestr" == 'Darwin' ]]; then
-   platform='mac'
+	platform='mac'
 else
 	echo $'\e[31mSorry, your operating system is not supported.\e[39m'
 	exit
@@ -27,20 +26,39 @@ fi
 
 
 # scripts directory
-pushd `dirname $0` > /dev/null
-SCRIPTDIR=`pwd -P`
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+	SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+	SOURCE="$(readlink "$SOURCE")"
+	[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 SCRIPTSDIR="$SCRIPTDIR/scripts"
 BINDIR="$SCRIPTDIR/bin"
-popd > /dev/null
 
+rm -rf "$BINDIR" # clean BINDIR
 mkdir -p "$BINDIR" # create BINDIR silently
-rm -rf "$BINDIR/*" # clean BINDIR
-scripts=`grep -Rl '^#!/' $SCRIPTSDIR` # find all executable files (heuristically) in "scripts" dir
-for script in $scripts # for each such file file
+
+# execute all install scripts inside SCRIPTSDIR
+INSTALLSCRIPTS=`find $SCRIPTSDIR -name 'install'`
+for install in $INSTALLSCRIPTS
 do
-	# echo "$script"
+	$install
+done
+
+
+scripts=`grep -Rl '^#!/' $SCRIPTSDIR` # find all executable files (heuristically) in "scripts" dir
+for script in $scripts # for each such file
+do
+	filename=`basename $script`
 	chmod gu+x $script # make it executable
-	ln -sf "$script" "$BINDIR" # create a symbolic link to it in BINDIR
+	if [[ ! $filename == 'install' ]] && [[ ! $filename == _* ]] ; then
+		ln -sf "$script" "$BINDIR" # create a symbolic link to it in BINDIR
+	fi
+	# if [[ $filename == 'install' ]] ; then # remember install scripts to execute later
+	# 	INSTALLSCRIPTS+=("$script")
+	# fi
 done
 
 
@@ -56,6 +74,12 @@ elif [[ $platform == 'mac' ]]; then
 	echo "Adding to PATH..."
 	sudo -s "echo '"$SCRIPTDIR:$BINDIR"' > /etc/paths.d/mytools"
 fi
+
+# Installing packages
+# for install in "${INSTALLSCRIPTS[@]}"
+# do
+# 	$install
+# done
 
 
 # now make all scripts executable

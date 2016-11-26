@@ -1,12 +1,15 @@
-## MyTools - a handy tool for managing your shell scripts
+## MyTools - a handful of shell scripts to make your life easier.
 
 ### Installation
 
-First, clone MyTools and checkout the branch *linux* or *osx* depending on your operating system.
+First, clone MyTools on your operating system.
 Then run
 
 ```sh
-./my-install
+cd ~
+git clone https://github.com/armeninants/mytools.git
+cd mytools
+./myinstall
 ```
 
 ### How to use
@@ -17,5 +20,5 @@ mydoc
 or
 
 ```sh
-mydoc query
+mydoc <search_query>
 ```

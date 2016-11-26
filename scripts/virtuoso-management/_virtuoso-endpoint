@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	Interface to Virtuoso SPARQL endpoint
+DESCRIPTION
+
+: <<USAGE
+	./virtuoso-endpoint "<sparql_query>"
+USAGE
+
+######################################
+
+curl -s -H "Accept:text/plain" --data-urlencode "query=$1" http://{virtuoso-host-token}:{virtuoso-sparql-port-token}/sparql 2>/dev/null
+# --digest -u 'user':'pass'

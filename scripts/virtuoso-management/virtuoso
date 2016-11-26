@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+  Virtuoso control script
+DESCRIPTION
+
+: <<USAGE
+  virtuoso {start|stop|status|restart}
+USAGE
+
+######################################
+
+start() {
+	# cd /etc/virtuoso-opensource-7 && virtuoso-t -f & # start virtuoso
+	/usr/bin/virtuoso-t +wait +configfile /etc/virtuoso-opensource-7/virtuoso.ini # start virtuoso
+}
+
+stop() {
+	isqlexec exec='shutdown();' # shut down virtuoso
+}
+
+
+# Operating system
+unamestr=`uname`
+if [[ "$unamestr" != 'Linux' ]]; then
+   echo "Linux required"
+   exit
+fi
+
+
+case "$1" in 
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       ps -e | grep virtuoso-t | awk {'print $1'}
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0 
+
+
+
+

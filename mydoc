@@ -31,7 +31,7 @@ do
 	# Tool name
 	TNAME=`basename "$f"`
 
-	if [[ (-n $1)  && !($TNAME =~ $1) ]]; then
+	if [[ (-n $1)  && !($TNAME =~ $1) ]] || [[ $TNAME == 'install' ]] || [[ $TNAME == _* ]] ; then
 		continue
 	fi
 
@@ -52,7 +52,7 @@ do
  		printf "\e[34m$USAGE\e[39m\n"
 	fi
 
-	# Usage
+	# Additional
  	ADDITIONAL=`cat $f | tr '\n' "${NL}" | grep -o "${NL}: *<<ADDITIONAL.*${NL}ADDITIONAL" | sed "s/\(${NL}: *<<ADDITIONAL\)\(.*\)\(${NL}ADDITIONAL\)/\2/g" | tr "${NL}" '\n' | grep -v "^$"`
  	if [ -n "$ADDITIONAL" ]; then 
  		printf "\e[90m$ADDITIONAL\e[39m\n"

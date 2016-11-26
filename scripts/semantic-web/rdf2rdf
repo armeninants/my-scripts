@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+  This Java tool converts your RDF files from any format to any format. It is wrapped into one single jar file for easy usage.
+  
+  Supported extensions:
+  +-----------------------------------+
+  | rdf, rdfs, owl, xml   | RDF/XML   |
+  | nt                    | N-Triples |
+  | ttl                   | Turtle    |
+  | n3                    | n3        |
+  | trig, xml             | TriX      |
+  | trig                  | TriG      |
+  +-----------------------------------+
+DESCRIPTION
+
+######################################
+
+# script directory
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+java -jar "$SCRIPTDIR"/rdf2rdf-1.0.1-2.3.1.jar "$@"

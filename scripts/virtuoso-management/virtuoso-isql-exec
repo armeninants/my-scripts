@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	Execute SQL or SPARQL in isql terminal
+DESCRIPTION
+
+: <<USAGE
+	./virtuoso-isql-exec somescript.sql
+USAGE
+
+######################################
+
+isql 127.0.0.1:1111 dba 'dba' "$1"

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	Change Virtuoso password
+DESCRIPTION
+
+: <<USAGE
+	virtuoso-change-pass user old_pass new_pass
+USAGE
+
+######################################
+
+virtuoso-isql-exec exec="USER_CHANGE_PASSWORD ( '$1', '$2', '$3' );"

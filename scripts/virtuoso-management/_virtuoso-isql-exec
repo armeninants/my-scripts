@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+### DOCUMENTATION ####################
+
+: <<DESCRIPTION
+	Execute SQL or SPARQL in isql terminal
+DESCRIPTION
+
+: <<USAGE
+	./virtuoso-isql-exec somescript.sql
+USAGE
+
+######################################
+
+isql {virtuoso-host-token}:{virtuoso-isql-port-token} dba '{virtuoso-dba-password-token}' "$1"
