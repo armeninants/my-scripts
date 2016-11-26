@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-echo
-echo -n "Installing Virtuoso management tools"
+echo "Installing Virtuoso management tools"
 
 echo -n "Type your Virtuoso password for dba (default is 'dba'): "
 read isqlpass
