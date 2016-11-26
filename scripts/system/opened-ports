@@ -11,6 +11,6 @@ USAGE
 
 ######################################
 
-printf "%s\t%s\t%s\n" 'Port' 'Prog' 'User'
+printf "%s\t%s\t\t%s\n" 'Port' 'Prog' 'User'
 echo '---------------------'
-sudo lsof -i -P | grep -i "listen" | awk '{print $9 "\t" $1 "\t" $3}' | rev | cut -s -f1 -d: | rev | sort | uniq
+sudo lsof -i -P | grep -i "listen" | awk '{print $9 "\t" $1 "\t\t" $3}' | rev | cut -s -f1 -d: | rev | sort | uniq
