@@ -14,7 +14,7 @@ USAGE
 
 start() {
 	# cd /etc/virtuoso-opensource-7 && virtuoso-t -f & # start virtuoso
-	/usr/bin/virtuoso-t +wait +configfile /etc/virtuoso-opensource-7/virtuoso.ini # start virtuoso
+  /usr/local/virtuoso-opensource/bin/virtuoso-t +wait +configfile /usr/local/virtuoso-opensource/var/lib/virtuoso/db/virtuoso.ini # start virtuoso
 }
 
 stop() {
