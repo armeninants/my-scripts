@@ -12,4 +12,4 @@ USAGE
 
 ######################################
 
-isql {virtuoso-host-token}:{virtuoso-isql-port-token} dba '{virtuoso-dba-password-token}' "$1"
+isql {virtuoso-host-token}:{virtuoso-isql-port-token} dba '{virtuoso-dba-password-token}' exec="$1"
