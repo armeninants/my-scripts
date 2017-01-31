@@ -12,4 +12,4 @@ USAGE
 
 ######################################
 
-/usr/local/virtuoso-opensource/bin/isqlw {virtuoso-host-token}:{virtuoso-isql-port-token} dba '{virtuoso-dba-password-token}' exec="$1"
+/usr/local/virtuoso-opensource/bin/isql {virtuoso-host-token}:{virtuoso-isql-port-token} dba '{virtuoso-dba-password-token}' exec="$1"
