@@ -55,5 +55,5 @@ recursiveFileProcessor({
 	fileHandler: fileHandler,
 	externalConfRequired: true,
 	// confFile: 'config.json',
-	skipDirs: ['doc']
+	skipDirs: ['doc', '.git']
 });
