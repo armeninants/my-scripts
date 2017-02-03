@@ -1,0 +1,6 @@
+{
+		"virtuoso-host": 				"127.0.0.1",
+		"virtuoso-isql-port": 		"1111",
+		"virtuoso-sparql-port": 		"8890",
+		"virtuoso-dba-password": 		"dba"
+	}
