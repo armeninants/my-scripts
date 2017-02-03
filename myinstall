@@ -64,12 +64,13 @@ done
 
 # permanently add the BINDIR and SCRIPTDIR directories to PATH
 if [[ $platform == 'linux' ]]; then
+	touch -am ~/.bash_profile ~/.bashrc
 	# remove old records from .bash_profile and .bashrc
 	sed -i.bak '/#my-tools/d' ~/.bash_profile && rm ~/.bash_profile.bak
 	sed -i.bak '/#my-tools/d' ~/.bashrc && rm ~/.bashrc.bak
 
-	echo 'PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bash_profile
-	echo 'PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bashrc
+	echo 'export PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bash_profile
+	echo 'export PATH=$PATH:'"$SCRIPTDIR:$BINDIR"' #my-tools' >> ~/.bashrc
 elif [[ $platform == 'mac' ]]; then
 	echo "Adding to PATH..."
 	sudo -s "echo '"$SCRIPTDIR:$BINDIR"' > /etc/paths.d/mytools"
