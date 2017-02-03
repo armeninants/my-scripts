@@ -18,7 +18,7 @@ start() {
 }
 
 stop() {
-	virtuoso-isqlexec 'shutdown();' # shut down virtuoso
+	virtuoso-isqlexec 'exec=shutdown();' # shut down virtuoso
 }
 
 
